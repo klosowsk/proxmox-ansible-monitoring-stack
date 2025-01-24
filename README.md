@@ -2,38 +2,38 @@
 
 This Ansible playbook automates the deployment of a monitoring stack using Prometheus and Grafana, specifically designed for monitoring:
 
-🖥️ - Proxmox VE hosts
-🚀 - Virtual Machines (Linux for now)
-📦 - LXC Containers
+🖥️ - Proxmox VE hosts  
+🚀 - Virtual Machines (Linux for now)  
+📦 - LXC Containers  
 📈 - System metrics via Node Exporter
 
 The stack provides comprehensive monitoring and visualization of:
 
-🔍 - Host system metrics
-🎯 - Container resources
-⚡ - VM performance
-🏥 - Proxmox cluster health
+🔍 - Host system metrics  
+🎯 - Container resources  
+⚡ - VM performance  
+🏥 - Proxmox cluster health  
 📊 - Custom metrics via Node Exporter
 
 This project can serve as a reference implementation for:
 
-🏠 - Homelab environments
-🌐 - Small to medium Proxmox deployments
-🛠️ - Self-hosted monitoring solutions
+🏠 - Homelab environments  
+🌐 - Small to medium Proxmox deployments  
+🛠️ - Self-hosted monitoring solutions  
 📚 - Infrastructure automation examples
 
 > **🚧 Note**: This is an actively developed project. Future updates will include:
 >
-> ✨ - Additional dashboard templates
-> 🚨 - Alert manager integration
-> 🔌 - More exporters for specialized monitoring
+> ✨ - Additional dashboard templates  
+> 🚨 - Alert manager integration  
+> 🔌 - More exporters for specialized monitoring  
 > 📖 - Extended documentation and best practices
 
 ## ⚡ Prerequisites
 
-🔧 - Ansible installed on the control machine
-💻 - Target server running Ubuntu (adjust if using different OS)
-🔑 - SSH access to the target server
+🔧 - Ansible installed on the control machine  
+💻 - Target server running Ubuntu (adjust if using different OS)  
+🔑 - SSH access to the target server  
 🍎 - For macOS users: Set `OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` environment variable
 
 ## 📁 Directory Structure
