@@ -1,0 +1,6 @@
+---
+# Grafana secrets
+vault_grafana_admin_user: admin
+vault_grafana_admin_password: admin # Change this in production!
+
+# Add other secrets here as needed

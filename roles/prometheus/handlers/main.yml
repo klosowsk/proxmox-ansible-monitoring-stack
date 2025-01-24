@@ -1,0 +1,6 @@
+---
+- name: restart prometheus
+  ansible.builtin.docker_container:
+    name: prometheus
+    state: started
+    restart: yes

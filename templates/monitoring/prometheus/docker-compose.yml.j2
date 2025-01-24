@@ -1,0 +1,24 @@
+services:
+  prometheus:
+    image: prom/prometheus:{{ prometheus_version | default('latest') }}
+    container_name: prometheus
+    volumes:
+      - {{ prometheus_data_dir }}:/prometheus
+      - {{ prometheus_config_dir }}/prometheus.yml:/etc/prometheus/prometheus.yml
+      - {{ prometheus_data_dir }}/wal:/prometheus/wal
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.wal-compression'
+    ports:
+      - "{{ prometheus_port }}:9090"
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    name: monitoring
+    driver: bridge 

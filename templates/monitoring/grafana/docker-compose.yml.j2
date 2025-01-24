@@ -1,0 +1,18 @@
+services:
+  grafana:
+    image: grafana/grafana:{{ grafana_version | default('latest') }}
+    container_name: grafana
+    volumes:
+      - {{ grafana_data_dir }}:/var/lib/grafana
+      - {{ grafana_config_dir }}/grafana.ini:/etc/grafana/grafana.ini
+      - {{ grafana_config_dir }}/provisioning:/etc/grafana/provisioning
+    ports:
+      - "{{ grafana_port }}:3000"
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    name: monitoring
+    external: true 

@@ -1,0 +1,37 @@
+# Monitoring server(s) group
+[monitoring_hosts]
+monitoring_server ansible_host=192.168.1.10 ansible_user=ansible
+
+# Proxmox hosts group
+[proxmox_hosts]
+proxmox1 ansible_host=192.168.1.20 ansible_user=ansible
+proxmox2 ansible_host=192.168.1.21 ansible_user=ansible
+
+# Linux Virtual machines group
+[linux_vms]
+vm1 ansible_host=192.168.1.30
+vm2 ansible_host=192.168.1.31
+
+# Windows Virtual machines group
+[windows_vms]
+winvm1 ansible_host=192.168.1.40
+winvm2 ansible_host=192.168.1.41
+
+# All VMs group
+[vms:children]
+linux_vms
+windows_vms
+
+# LXC containers group
+[containers]
+lxc1 ansible_host=192.168.1.50 ansible_user=ansible
+lxc2 ansible_host=192.168.1.51 ansible_user=ansible
+
+
+# All monitoring-related hosts
+[monitoring_servers:children]
+monitoring_hosts
+
+[node_exporter_targets:children]
+proxmox_hosts
+containers 

@@ -1,0 +1,15 @@
+---
+- name: Deploy Monitoring Stack
+  hosts: monitoring_servers
+  become: true
+  roles:
+    - common
+    - monitoring_base
+    - prometheus
+    - grafana
+
+- name: Deploy Node Exporter
+  hosts: node_exporter_targets
+  become: true
+  roles:
+    - node_exporter

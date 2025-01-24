@@ -1,0 +1,30 @@
+---
+# Copy Prometheus configuration
+- name: Copy prometheus config
+  ansible.builtin.template:
+    src: monitoring/prometheus/prometheus.yml.j2
+    dest: "{{ prometheus_config_dir }}/prometheus.yml"
+    mode: "0644"
+  notify: restart prometheus
+
+# Copy Docker Compose file
+- name: Copy Prometheus Docker Compose file
+  template:
+    src: "monitoring/prometheus/docker-compose.yml.j2"
+    dest: "{{ docker_compose_dir }}/prometheus/docker-compose.yml"
+    mode: "0644"
+
+# Deploy Prometheus
+- name: Deploy Prometheus
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_compose_dir }}/prometheus"
+    files:
+      - docker-compose.yml
+    state: present
+
+# Ensure prometheus is running
+- name: Ensure prometheus is running
+  ansible.builtin.docker_container:
+    name: prometheus
+    state: started
+    restart_policy: unless-stopped

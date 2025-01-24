@@ -1,0 +1,29 @@
+---
+# Create Grafana configuration
+- name: Copy Grafana configuration
+  template:
+    src: "monitoring/grafana/grafana.ini.j2"
+    dest: "{{ grafana_config_dir }}/grafana.ini"
+    mode: "0644"
+
+# Copy Grafana datasource configuration
+- name: Copy Grafana datasource configuration
+  template:
+    src: "monitoring/grafana/provisioning/datasources/prometheus.yml.j2"
+    dest: "{{ grafana_config_dir }}/provisioning/datasources/prometheus.yml"
+    mode: "0644"
+
+# Copy Docker Compose file
+- name: Copy Grafana Docker Compose file
+  template:
+    src: "monitoring/grafana/docker-compose.yml.j2"
+    dest: "{{ docker_compose_dir }}/grafana/docker-compose.yml"
+    mode: "0644"
+
+# Deploy Grafana
+- name: Deploy Grafana
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_compose_dir }}/grafana"
+    files:
+      - docker-compose.yml
+    state: present

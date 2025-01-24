@@ -1,0 +1,14 @@
+# Ansible
+.vault_pass
+*.retry
+
+# Environment files
+.env 
+
+# Sensitive files
+inventory/hosts.ini
+group_vars/all/vault.yml
+
+# Allow example files
+!inventory/hosts.ini.example
+!group_vars/all/vault.yml.example 

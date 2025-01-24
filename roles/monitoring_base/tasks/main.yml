@@ -1,0 +1,54 @@
+---
+# Create base directories
+- name: Create monitoring directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ monitoring_base_dir }}"
+    - "{{ config_base_dir }}"
+    - "{{ data_base_dir }}"
+    - "{{ docker_compose_dir }}"
+    - "{{ docker_compose_dir }}/prometheus"
+    - "{{ docker_compose_dir }}/grafana"
+    - "{{ prometheus_config_dir }}"
+    - "{{ prometheus_data_dir }}"
+    - "{{ prometheus_data_dir }}/wal"
+    - "{{ grafana_config_dir }}"
+    - "{{ grafana_data_dir }}"
+
+# Set Prometheus directory permissions
+- name: Set Prometheus directory permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755" # Read & execute for all, write only for owner
+    owner: nobody
+    group: nogroup
+  loop:
+    - "{{ prometheus_data_dir }}"
+    - "{{ prometheus_data_dir }}/wal"
+
+# Set Grafana directory permissions
+- name: Set Grafana directory permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755" # Read & execute for all, write only for owner
+    owner: "472" # Default Grafana user ID
+    group: "472" # Default Grafana group ID
+  loop:
+    - "{{ grafana_data_dir }}"
+
+# Create Grafana provisioning directories
+- name: Create Grafana provisioning directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+    owner: "472" # Default Grafana user ID
+    group: "472" # Default Grafana group ID
+  loop:
+    - "{{ grafana_config_dir }}/provisioning"
+    - "{{ grafana_config_dir }}/provisioning/datasources"

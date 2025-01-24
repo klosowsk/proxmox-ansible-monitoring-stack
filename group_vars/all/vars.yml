@@ -1,0 +1,21 @@
+---
+# Base directories
+monitoring_base_dir: "/opt/monitoring"
+config_base_dir: "{{ monitoring_base_dir }}/config"
+data_base_dir: "{{ monitoring_base_dir }}/data"
+
+# Docker configuration
+docker_compose_dir: "{{ monitoring_base_dir }}/compose"
+
+# Prometheus configuration
+prometheus_port: 9090
+prometheus_data_dir: "{{ data_base_dir }}/prometheus"
+prometheus_config_dir: "{{ config_base_dir }}/prometheus"
+
+# Grafana configuration
+grafana_admin_user: "{{ vault_grafana_admin_user }}"
+grafana_admin_password: "{{ vault_grafana_admin_password }}"
+grafana_port: 3000
+grafana_data_dir: "{{ data_base_dir }}/grafana"
+grafana_config_dir: "{{ config_base_dir }}/grafana"
+grafana_allow_sign_up: "false"
