@@ -12,3 +12,5 @@ group_vars/all/vault.yml
 # Allow example files
 !inventory/hosts.ini.example
 !group_vars/all/vault.yml.example 
+
+.DS_Store

@@ -4,8 +4,9 @@ services:
     container_name: prometheus
     volumes:
       - {{ prometheus_data_dir }}:/prometheus
-      - {{ prometheus_config_dir }}/prometheus.yml:/etc/prometheus/prometheus.yml
+      - {{ prometheus_config_dir }}/rules:/etc/prometheus/rules
       - {{ prometheus_data_dir }}/wal:/prometheus/wal
+      - {{ prometheus_config_dir }}/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'

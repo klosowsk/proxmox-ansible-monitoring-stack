@@ -22,6 +22,23 @@
       - docker-compose.yml
     state: present
 
+# Create Prometheus rules directory
+- name: Create Prometheus rules directory
+  file:
+    path: "{{ prometheus_config_dir }}/rules"
+    state: directory
+    mode: "0755"
+  when: alertmanager_enabled
+
+# Copy Prometheus alert rules
+- name: Copy Prometheus alert rules
+  template:
+    src: monitoring/prometheus/rules/node_alerts.yml.j2
+    dest: "{{ prometheus_config_dir }}/rules/node_alerts.yml"
+    mode: "0644"
+  notify: restart prometheus
+  when: alertmanager_enabled
+
 # Ensure prometheus is running
 - name: Ensure prometheus is running
   ansible.builtin.docker_container:

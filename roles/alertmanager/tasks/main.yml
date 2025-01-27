@@ -1,0 +1,41 @@
+---
+- name: Check if AlertManager should be enabled
+  fail:
+    msg: "AlertManager is disabled because vault_slack_webhook_url is not configured"
+  when:
+    - not alertmanager_enabled
+    - ansible_check_mode is not defined or not ansible_check_mode
+
+- name: Create Alert Manager configuration directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ alertmanager_config_dir }}"
+    - "{{ docker_compose_dir }}/alertmanager"
+  when: alertmanager_enabled
+
+- name: Copy Alert Manager configuration
+  template:
+    src: monitoring/alertmanager/alertmanager.yml.j2
+    dest: "{{ alertmanager_config_dir }}/alertmanager.yml"
+    mode: "0644"
+  notify: restart alertmanager
+  when: alertmanager_enabled
+
+- name: Copy docker-compose file
+  template:
+    src: monitoring/alertmanager/docker-compose.yml.j2
+    dest: "{{ docker_compose_dir }}/alertmanager/docker-compose.yml"
+    mode: "0644"
+  notify: restart alertmanager
+  when: alertmanager_enabled
+
+- name: Start Alert Manager using docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_compose_dir }}/alertmanager"
+    files:
+      - docker-compose.yml
+    state: present
+  when: alertmanager_enabled

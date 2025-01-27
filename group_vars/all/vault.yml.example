@@ -4,3 +4,5 @@ vault_grafana_admin_user: admin
 vault_grafana_admin_password: admin # Change this in production!
 
 # Add other secrets here as needed
+vault_slack_webhook_url: "https://hooks.slack.com/services/XXXXX/YYYYY/ZZZZZ"
+vault_slack_channel: "#alerts"

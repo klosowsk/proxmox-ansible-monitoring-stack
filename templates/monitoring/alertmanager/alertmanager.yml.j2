@@ -1,0 +1,70 @@
+global:
+  resolve_timeout: 5m
+  slack_api_url: "{{ vault_slack_webhook_url }}"
+
+route:
+  group_by: ["alertname", "job"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  # Route based on severity
+  routes:
+    - match:
+        severity: critical
+      repeat_interval: 1h # Critical alerts repeat every hour
+      receiver: "slack-critical"
+    - match:
+        severity: warning
+      repeat_interval: 12h # Warning alerts repeat every 12 hours
+      receiver: "slack-warnings"
+  # Default receiver
+  receiver: "slack-default"
+
+receivers:
+  - name: "slack-critical"
+    slack_configs:
+      - channel: "{{ vault_slack_channel }}"
+        send_resolved: true
+        icon_emoji: ":red_circle:"
+        title: "🚨 [CRITICAL] {{ '{{' }} .GroupLabels.alertname {{ '}}' }}"
+        text: |
+          *Alert:* {{ '{{' }} .GroupLabels.alertname {{ '}}' }}
+          *Status:* {{ '{{' }} .Status {{ '}}' }}
+          {{ '{{' }} range .Alerts {{ '}}' }}
+          *Instance:* {{ '{{' }} .Labels.instance {{ '}}' }}
+          *Summary:* {{ '{{' }} .Annotations.summary {{ '}}' }}
+          *Description:* {{ '{{' }} .Annotations.description {{ '}}' }}
+          *Started:* {{ '{{' }} .StartsAt.Format "2006-01-02 15:04:05" {{ '}}' }}
+          {{ '{{' }} end {{ '}}' }}
+
+  - name: "slack-warnings"
+    slack_configs:
+      - channel: "{{ vault_slack_channel }}"
+        send_resolved: true
+        icon_emoji: ":warning:"
+        title: "⚠️ [WARNING] {{ '{{' }} .GroupLabels.alertname {{ '}}' }}"
+        text: |
+          *Alert:* {{ '{{' }} .GroupLabels.alertname {{ '}}' }}
+          *Status:* {{ '{{' }} .Status {{ '}}' }}
+          {{ '{{' }} range .Alerts {{ '}}' }}
+          *Instance:* {{ '{{' }} .Labels.instance {{ '}}' }}
+          *Summary:* {{ '{{' }} .Annotations.summary {{ '}}' }}
+          *Description:* {{ '{{' }} .Annotations.description {{ '}}' }}
+          *Started:* {{ '{{' }} .StartsAt.Format "2006-01-02 15:04:05" {{ '}}' }}
+          {{ '{{' }} end {{ '}}' }}
+
+  - name: "slack-default"
+    slack_configs:
+      - channel: "{{ vault_slack_channel }}"
+        send_resolved: true
+        icon_emoji: ":information_source:"
+        title: "ℹ️ [INFO] {{ '{{' }} .GroupLabels.alertname {{ '}}' }}"
+        text: |
+          *Alert:* {{ '{{' }} .GroupLabels.alertname {{ '}}' }}
+          *Status:* {{ '{{' }} .Status {{ '}}' }}
+          {{ '{{' }} range .Alerts {{ '}}' }}
+          *Instance:* {{ '{{' }} .Labels.instance {{ '}}' }}
+          *Summary:* {{ '{{' }} .Annotations.summary {{ '}}' }}
+          *Description:* {{ '{{' }} .Annotations.description {{ '}}' }}
+          *Started:* {{ '{{' }} .StartsAt.Format "2006-01-02 15:04:05" {{ '}}' }}
+          {{ '{{' }} end {{ '}}' }}

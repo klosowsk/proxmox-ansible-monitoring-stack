@@ -2,6 +2,17 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
+{% if alertmanager_enabled %}
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - 'alertmanager:9093'
+
+rule_files:
+  - "/etc/prometheus/rules/*.yml"
+{% endif %}
+
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
@@ -10,6 +21,25 @@ scrape_configs:
   - job_name: 'node_exporter'
     static_configs:
       - targets:
-        {% for host in groups['node_exporter_targets'] %}
+{% for host in groups['node_exporter_targets'] %}
         - '{{ hostvars[host].ansible_host }}:9100'
-        {% endfor %}
+{% endfor %}
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '(.*):\d+'
+        replacement: '${1}'
+{% for host in groups['node_exporter_targets'] %}
+{% if hostvars[host].group is defined %}
+      - source_labels: [__address__]
+        regex: '{{ hostvars[host].ansible_host }}:.*'
+        replacement: '{{ hostvars[host].group }}'
+        target_label: group
+{% endif %}
+{% if hostvars[host].service is defined %}
+      - source_labels: [__address__]
+        regex: '{{ hostvars[host].ansible_host }}:.*'
+        replacement: '{{ hostvars[host].service }}'
+        target_label: service
+{% endif %}
+{% endfor %}

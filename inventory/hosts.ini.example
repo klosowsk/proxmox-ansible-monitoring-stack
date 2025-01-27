@@ -4,8 +4,8 @@ monitoring_server ansible_host=192.168.1.10 ansible_user=ansible
 
 # Proxmox hosts group
 [proxmox_hosts]
-proxmox1 ansible_host=192.168.1.20 ansible_user=ansible
-proxmox2 ansible_host=192.168.1.21 ansible_user=ansible
+proxmox1 ansible_host=192.168.1.20 ansible_user=ansible service=proxmox1 group=hypervisor
+proxmox2 ansible_host=192.168.1.21 ansible_user=ansible service=proxmox2 group=hypervisor
 
 # Linux Virtual machines group
 [linux_vms]
@@ -24,8 +24,8 @@ windows_vms
 
 # LXC containers group
 [containers]
-lxc1 ansible_host=192.168.1.50 ansible_user=ansible
-lxc2 ansible_host=192.168.1.51 ansible_user=ansible
+lxc1 ansible_host=192.168.1.50 ansible_user=ansible service=lxc1 group=container
+lxc2 ansible_host=192.168.1.51 ansible_user=ansible service=lxc2 group=container
 
 
 # All monitoring-related hosts

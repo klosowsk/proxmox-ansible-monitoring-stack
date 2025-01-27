@@ -13,7 +13,8 @@ The stack provides comprehensive monitoring and visualization of:
 🎯 - Container resources  
 ⚡ - VM performance  
 🏥 - Proxmox cluster health  
-📊 - Custom metrics via Node Exporter
+📊 - Custom metrics via Node Exporter  
+🚨 - Automated alerts via AlertManager
 
 This project can serve as a reference implementation for:
 
@@ -25,7 +26,6 @@ This project can serve as a reference implementation for:
 > **🚧 Note**: This is an actively developed project. Future updates will include:
 >
 > ✨ - Additional dashboard templates  
-> 🚨 - Alert manager integration  
 > 🔌 - More exporters for specialized monitoring  
 > 📖 - Extended documentation and best practices
 
@@ -124,6 +124,7 @@ monitoring-ansible/
 
 🔍 - Prometheus: http://your-server-ip:9090
 📊 - Grafana: http://your-server-ip:3000
+🚨 - AlertManager: http://your-server-ip:9093 (when enabled)
 
 ⚠️ Default Grafana credentials are in `group_vars/all/vault.yml` - make sure to change these in production!
 
@@ -171,3 +172,57 @@ Add this to your `~/.zshrc` or `~/.bash_profile` to make it permanent:
 ```bash
 echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' >> ~/.zshrc
 ```
+
+## 🚨 Alerting System
+
+The monitoring stack includes an optional alerting system using AlertManager with Slack integration.
+The system monitors by default:
+
+### Host Availability
+
+- 🔴 **HostDown**: Critical alert when a host is unreachable for more than 1 minute
+- ⚠️ **HostHighDowntime**: Warning when host uptime falls below 95% in 24 hours
+
+### Resource Usage
+
+- 💻 **HighCPUUsage**: Warning when CPU usage exceeds 85% for 5 minutes
+- 🧠 **HighMemoryUsage**: Warning when memory usage exceeds 85% for 5 minutes
+- 💾 **DiskSpaceRunningOut**: Warning when disk usage exceeds 85% for 5 minutes
+
+### Alert Configuration
+
+- Critical alerts repeat every hour
+- Warning alerts repeat every 12 hours
+- All alerts include host instance and service information
+- Alerts are automatically resolved when conditions return to normal
+
+### Setting Up Alerts
+
+1. Configure Slack integration:
+
+   ```bash
+   # Edit vault file
+   ansible-vault edit group_vars/all/vault.yml
+
+   # Add Slack configuration
+   vault_slack_webhook_url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+   vault_slack_channel: "#alerts"
+   ```
+
+2. Alerts are automatically enabled when Slack webhook URL is configured
+3. To disable alerts, remove or leave empty the `vault_slack_webhook_url`
+
+## 🔧 Customizing Alerts
+
+Alert thresholds can be adjusted in:
+
+```
+templates/monitoring/prometheus/rules/node_alerts.yml.j2
+```
+
+Common customizations:
+
+- Adjust CPU/Memory thresholds (default: 85%)
+- Change alert timing (default: 5m for resource alerts)
+- Modify uptime requirements (default: 95% over 24h)
+- Add new alert rules for specific metrics
