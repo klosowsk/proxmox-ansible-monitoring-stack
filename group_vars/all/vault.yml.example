@@ -1,8 +1,16 @@
 ---
 # Grafana secrets
 vault_grafana_admin_user: admin
-vault_grafana_admin_password: admin # Change this in production!
+vault_grafana_admin_password: admin
 
 # Add other secrets here as needed
 vault_slack_webhook_url: "https://hooks.slack.com/services/XXXXX/YYYYY/ZZZZZ"
 vault_slack_channel: "#alerts"
+
+# Nut server credentials
+vault_nut_host: "192.168.1.21"
+vault_nut_port: 3493
+vault_nut_username: monuser
+vault_nut_password: secret
+
+# Add other secrets here as needed

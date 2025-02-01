@@ -25,3 +25,11 @@ alertmanager_port: 9093
 alertmanager_config_dir: "{{ config_base_dir }}/alertmanager"
 alertmanager_data_dir: "{{ data_base_dir }}/alertmanager"
 alertmanager_enabled: "{{ vault_slack_webhook_url is defined and vault_slack_webhook_url != '' }}"
+
+# NUT configuration
+nut_enabled: true
+nut_exporter_port: 9199
+nut_host: "{{ vault_nut_host }}"
+nut_port: "{{ vault_nut_port }}"
+nut_username: "{{ vault_nut_username }}"
+nut_password: "{{ vault_nut_password }}"

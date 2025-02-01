@@ -1,0 +1,18 @@
+services:
+  nut_exporter:
+    image: druggeri/nut_exporter:latest
+    container_name: nut_exporter
+    restart: unless-stopped
+    ports:
+      - "{{ nut_exporter_port }}:9199"
+    environment:
+      - NUT_EXPORTER_SERVER={{ nut_host }}
+      - NUT_EXPORTER_SERVERPORT={{ nut_port }}
+      - NUT_EXPORTER_USERNAME={{ nut_username }}
+      - NUT_EXPORTER_PASSWORD={{ nut_password }}
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    external: true 

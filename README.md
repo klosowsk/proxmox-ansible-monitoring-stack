@@ -6,6 +6,7 @@ This Ansible playbook automates the deployment of a monitoring stack using Prome
 🚀 - Virtual Machines (Linux for now)  
 📦 - LXC Containers  
 📈 - System metrics via Node Exporter
+🔋 - UPS monitoring via NUT
 
 The stack provides comprehensive monitoring and visualization of:
 
@@ -13,7 +14,8 @@ The stack provides comprehensive monitoring and visualization of:
 🎯 - Container resources  
 ⚡ - VM performance  
 🏥 - Proxmox cluster health  
-📊 - Custom metrics via Node Exporter  
+📊 - Custom metrics via Node Exporter
+🔋 - UPS monitoring via NUT
 🚨 - Automated alerts via AlertManager
 
 This project can serve as a reference implementation for:
@@ -35,34 +37,6 @@ This project can serve as a reference implementation for:
 💻 - Target server running Ubuntu (adjust if using different OS)  
 🔑 - SSH access to the target server  
 🍎 - For macOS users: Set `OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` environment variable
-
-## 📁 Directory Structure
-
-```
-monitoring-ansible/
-├── inventory/
-│   └── hosts.ini
-├── group_vars/
-│   └── all/
-│       ├── vars.yml
-│       └── vault.yml
-├── roles/
-│   ├── common/
-│   ├── monitoring_base/
-│   ├── prometheus/
-│   ├── grafana/
-│   ├── node_exporter/
-├── templates/
-│   └── monitoring/
-│       ├── prometheus/
-│       │   ├── docker-compose.yml.j2
-│       │   └── prometheus.yml.j2
-│       └── grafana/
-│           ├── docker-compose.yml.j2
-│           └── grafana.ini.j2
-├── site.yml
-└── ansible.cfg
-```
 
 ## 🚀 Getting Started
 
@@ -189,6 +163,14 @@ The system monitors by default:
 - 🧠 **HighMemoryUsage**: Warning when memory usage exceeds 85% for 5 minutes
 - 💾 **DiskSpaceRunningOut**: Warning when disk usage exceeds 85% for 5 minutes
 
+### UPS Monitoring
+
+The stack includes optional UPS monitoring via Network UPS Tools (NUT):
+
+- 🔋 **UPSOnBattery**: Warning when UPS switches to battery power
+- ⚡ **UPSLowBattery**: Critical alert when UPS battery level falls below 20%
+- 📈 **UPSHighLoad**: Warning when UPS load exceeds 80% for 5 minutes
+
 ### Alert Configuration
 
 - Critical alerts repeat every hour
@@ -211,6 +193,51 @@ The system monitors by default:
 
 2. Alerts are automatically enabled when Slack webhook URL is configured
 3. To disable alerts, remove or leave empty the `vault_slack_webhook_url`
+
+### Setting Up NUT Monitoring
+
+1. Enable NUT monitoring in your variables:
+
+   ```yaml
+   # group_vars/all/vars.yml
+   nut_enabled: true
+   ```
+
+2. Set your NUT server variables:
+
+   ```yaml
+   # group_vars/all/vars.yml
+   nut_exporter_port: 9199
+   ```
+
+3. Configure NUT connection details in vault:
+
+   ```bash
+   # Edit vault file
+   ansible-vault edit group_vars/all/vault.yml
+
+   # Add NUT configuration
+   vault_nut_host: "192.168.1.12"
+   vault_nut_port: 3493
+   vault_nut_username: "monuser"      # NUT username
+   vault_nut_password: "secret"       # NUT password
+   ```
+
+4. The NUT exporter will be automatically deployed when `nut_enabled` is true
+5. Metrics will be available in Prometheus and Grafana
+6. Default alerts will be configured for common UPS events
+
+Common customizations for NUT alerts can be found in:
+
+```
+templates/monitoring/prometheus/rules/nut_alerts.yml.j2
+```
+
+You can adjust:
+
+- Battery level thresholds (default: 20% for low battery)
+- Load thresholds (default: 80% for high load)
+- Alert timing and severity levels
 
 ## 🔧 Customizing Alerts
 

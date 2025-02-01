@@ -1,0 +1,50 @@
+---
+# Only run these tasks if nut is enabled
+- name: Set up NUT exporter
+  when: nut_enabled | bool
+  block:
+    # Create Docker Compose directory for NUT exporter
+    - name: Create NUT exporter Docker Compose directory
+      file:
+        path: "{{ docker_compose_dir }}/nut_exporter"
+        state: directory
+        mode: "0755"
+
+    # Copy Docker Compose file
+    - name: Copy NUT exporter Docker Compose file
+      template:
+        src: "monitoring/nut_exporter/docker-compose.yml.j2"
+        dest: "{{ docker_compose_dir }}/nut_exporter/docker-compose.yml"
+        mode: "0644"
+
+    # Deploy NUT exporter
+    - name: Deploy NUT exporter
+      community.docker.docker_compose_v2:
+        project_src: "{{ docker_compose_dir }}/nut_exporter"
+        files:
+          - docker-compose.yml
+        state: present
+
+    # Ensure NUT exporter is running
+    - name: Ensure NUT exporter is running
+      ansible.builtin.docker_container:
+        name: nut_exporter
+        state: started
+        restart_policy: unless-stopped
+
+# Stop and remove NUT exporter if disabled
+- name: Remove NUT exporter if disabled
+  when: not (nut_enabled | bool)
+  block:
+    - name: Stop and remove NUT exporter container
+      community.docker.docker_compose_v2:
+        project_src: "{{ docker_compose_dir }}/nut_exporter"
+        files:
+          - docker-compose.yml
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove NUT exporter directory
+      file:
+        path: "{{ docker_compose_dir }}/nut_exporter"
+        state: absent

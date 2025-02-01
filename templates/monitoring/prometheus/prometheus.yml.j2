@@ -43,3 +43,11 @@ scrape_configs:
         target_label: service
 {% endif %}
 {% endfor %}
+
+{% if nut_enabled | bool %}
+  - job_name: 'nut'
+    static_configs:
+      - targets: ['nut_exporter:9199']
+    metrics_path: /ups_metrics
+{% endif %}
+

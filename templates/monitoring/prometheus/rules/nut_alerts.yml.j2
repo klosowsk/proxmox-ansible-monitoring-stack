@@ -1,0 +1,29 @@
+groups:
+  - name: nut_alerts
+    rules:
+      - alert: UPSOnBattery
+        expr: network_ups_tools_ups_status{status="OB"} == 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "UPS is running on battery"
+          description: "UPS is running on battery power"
+
+      - alert: UPSLowBattery
+        expr: network_ups_tools_battery_charge < 20
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "UPS battery level critical"
+          description: "UPS battery level is below 20%"
+
+      - alert: UPSHighLoad
+        expr: network_ups_tools_ups_load > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "UPS load is high"
+          description: "UPS load is above 80%"
