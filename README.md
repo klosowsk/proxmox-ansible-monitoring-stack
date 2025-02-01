@@ -5,7 +5,7 @@ This Ansible playbook automates the deployment of a monitoring stack using Prome
 🖥️ - Proxmox VE hosts  
 🚀 - Virtual Machines (Linux for now)  
 📦 - LXC Containers  
-📈 - System metrics via Node Exporter
+📈 - System metrics via Node Exporter  
 🔋 - UPS monitoring via NUT
 
 The stack provides comprehensive monitoring and visualization of:
@@ -14,8 +14,8 @@ The stack provides comprehensive monitoring and visualization of:
 🎯 - Container resources  
 ⚡ - VM performance  
 🏥 - Proxmox cluster health  
-📊 - Custom metrics via Node Exporter
-🔋 - UPS monitoring via NUT
+📊 - Custom metrics via Node Exporter  
+🔋 - UPS monitoring via NUT  
 🚨 - Automated alerts via AlertManager
 
 This project can serve as a reference implementation for:
